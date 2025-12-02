@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primer Latido - Panel Principal</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="site-header">
+            <div class="site-brand">
+                <img src="" alt="Logo Primer Latido" style="width:44px; height:44px; border-radius:8px; background: #fff;">
+                <h1>Primer Latido</h1>
+            </div>
+            <nav>
+                <a href="login.html">Cerrar Sesión</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-text">
+                <h2>Tu acompañamiento durante el embarazo</h2>
+                <p>Calcula tu fecha probable de parto, registra síntomas y organiza tus citas médicas en un solo lugar.</p>
+                <div class="hero-cta">
+                    <button class="btn" onclick="document.getElementById('fechaUltima')?.focus()">Calcular fecha de parto</button>
+                    <a class="btn secondary" href="#sintomasTitle">Registrar síntoma</a>
+                </div>
+            </div>
+            <div class="hero-visual card">
+                <!-- Placeholder para imagen o resumen rápido -->
+                <p style="margin:0; color:var(--color-muted)">Semana actual: —</p>
+                <p style="margin-top:10px; font-size:0.95rem">Consejo rápido: Lleva un registro diario de tus síntomas para compartir con tu profesional de la salud.</p>
+            </div>
+        </section>
+
+        <!-- Grid: calculadora, sintomas, citas -->
+        <div class="grid">
+            <div class="card">
+                <h2 id="calcTitle">Calculadora de Fecha Probable de Parto</h2>
+                <form id="calcForm" class="card-form">
+                    <input type="date" id="fechaUltima" required>
+                    <button class="btn" type="submit">Calcular</button>
+                </form>
+                <p id="resultadoParto" aria-live="polite"></p>
+            </div>
+
+            <div class="card">
+                <h2 id="sintomasTitle">Registro de Síntomas</h2>
+                <form id="sintomasForm">
+                    <input type="text" id="sintoma" placeholder="Síntoma" required>
+                    <select id="estadoAnimo">
+                        <option value="Feliz">Feliz</option>
+                        <option value="Cansada">Cansada</option>
+                        <option value="Ansiosa">Ansiosa</option>
+                    </select>
+                    <button class="btn" type="submit">Agregar</button>
+                </form>
+                <table>
+                    <thead>
+                        <tr><th>Síntoma</th><th>Estado</th><th>Acción</th></tr>
+                    </thead>
+                    <tbody id="tablaSintomas"></tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2 id="citasTitle">Agenda de Citas Médicas</h2>
+                <form id="citasForm">
+                    <input type="date" id="fechaCita" required>
+                    <input type="time" id="horaCita" required>
+                    <input type="text" id="tipoCita" placeholder="Tipo de cita" required>
+                    <button class="btn" type="submit">Agregar</button>
+                </form>
+                <table>
+                    <thead>
+                        <tr><th>Fecha</th><th>Hora</th><th>Tipo</th><th>Acción</th></tr>
+                    </thead>
+                    <tbody id="tablaCitas"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer style="margin-top:22px; text-align:center; color:var(--color-muted)">
+            <p>Proyecto Primer Latido - Autor: [Tu Nombre]</p>
+        </footer>
+    </main>
+
+    <script src="main.js"></script>
+</body>
+</html>
