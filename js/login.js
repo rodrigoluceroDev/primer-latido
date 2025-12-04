@@ -102,10 +102,23 @@ function handleLoginSubmit(e) {
             { email: 'usuario@ejemplo.com', password: '123456', name: 'Usuario Demo' }
         ];
 
-        // Buscar en storage primero, luego en mock
-        let user = users.find(u => u.email === email && u.password === password);
+        // Normalizar email ingresado
+        const normalizedEmail = email.toLowerCase();
+
+        // Buscar en storage primero (comparando emails en minúscula), luego en mock
+        let user = users.find(u => (u.email || '').trim().toLowerCase() === normalizedEmail && String(u.password) === String(password));
         if (!user) {
-            user = mockUsers.find(u => u.email === email && u.password === password) || null;
+            user = mockUsers.find(u => u.email === normalizedEmail && String(u.password) === String(password)) || null;
+        }
+
+        // Depuración: si no se encontró usuario, loguear información útil sin exponer contraseñas
+        if (!user) {
+            try {
+                const emails = users.map(u => (u.email || '').trim().toLowerCase());
+                console.info('Login intento fallido. Email buscado:', normalizedEmail, 'Usuarios registrados (emails):', emails);
+            } catch (dbgErr) {
+                console.warn('Error al generar debug info de usuarios:', dbgErr);
+            }
         }
 
         if (user) {
