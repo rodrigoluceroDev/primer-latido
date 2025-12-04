@@ -88,18 +88,31 @@ function handleLoginSubmit(e) {
     
     // Simular petición al servidor (en producción sería una llamada real)
     setTimeout(() => {
-        // Simulación de verificación de credenciales
+        // Primero intentar con usuarios guardados en localStorage
+        let users = [];
+        try {
+            users = JSON.parse(localStorage.getItem('primerLatidoUsers') || '[]');
+        } catch (err) {
+            console.warn('No se pudo parsear primerLatidoUsers:', err);
+            users = [];
+        }
+
+        // Usuario demo por defecto como fallback
         const mockUsers = [
             { email: 'usuario@ejemplo.com', password: '123456', name: 'Usuario Demo' }
         ];
-        
-        const user = mockUsers.find(u => u.email === email && u.password === password);
-        
+
+        // Buscar en storage primero, luego en mock
+        let user = users.find(u => u.email === email && u.password === password);
+        if (!user) {
+            user = mockUsers.find(u => u.email === email && u.password === password) || null;
+        }
+
         if (user) {
             // Login exitoso
             createUserSession(user, rememberMe);
             showSuccess('¡Inicio de sesión exitoso! Redirigiendo...');
-            
+
             // Redirigir al dashboard después de 1.5 segundos
             setTimeout(() => {
                 window.location.href = 'index.html';
@@ -110,7 +123,7 @@ function handleLoginSubmit(e) {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
         }
-    }, 1500);
+    }, 800);
 }
 
 /**
