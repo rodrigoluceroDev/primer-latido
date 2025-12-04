@@ -3,96 +3,476 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Primer Latido - Panel Principal</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts -->
+    <title>Primer Latido - Acompañando tu Embarazo</title>
+    <meta name="description" content="Herramientas para acompañar tu embarazo: calculadora de parto, registro de síntomas y agenda de citas médicas">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/components.css">
+    <link rel="stylesheet" href="./css/responsive.css">
 </head>
 <body>
-    <header>
-        <div class="site-header">
-            <div class="site-brand">
-                <img src="" alt="Logo Primer Latido" style="width:44px; height:44px; border-radius:8px; background: #fff;">
-                <h1>Primer Latido</h1>
-            </div>
-            <nav>
-                <a href="login.html">Cerrar Sesión</a>
+    <!-- Header y Navegación Mejorada -->
+    <header class="main-header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                    <h1>Primer Latido</h1>
+                </div>
+                <button class="menu-toggle" aria-label="Abrir menú">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-menu">
+                    <li><a href="#home" class="nav-link active"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="#calculator" class="nav-link"><i class="fas fa-calculator"></i> Calculadora</a></li>
+                    <li><a href="#symptoms" class="nav-link"><i class="fas fa-heart"></i> Síntomas</a></li>
+                    <li><a href="#appointments" class="nav-link"><i class="fas fa-calendar-check"></i> Citas</a></li>
+                    <li><a href="#advice" class="nav-link"><i class="fas fa-lightbulb"></i> Consejos</a></li>
+                    <li><a href="#tracker" class="nav-link"><i class="fas fa-chart-line"></i> Seguimiento</a></li>
+                </ul>
             </nav>
         </div>
     </header>
 
-    <main class="container">
-        <!-- Hero -->
-        <section class="hero">
-            <div class="hero-text">
-                <h2>Tu acompañamiento durante el embarazo</h2>
-                <p>Calcula tu fecha probable de parto, registra síntomas y organiza tus citas médicas en un solo lugar.</p>
-                <div class="hero-cta">
-                    <button class="btn" onclick="document.getElementById('fechaUltima')?.focus()">Calcular fecha de parto</button>
-                    <a class="btn secondary" href="#sintomasTitle">Registrar síntoma</a>
+    <!-- Banner Hero -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2 class="hero-title">Acompañando cada paso de tu embarazo</h2>
+                <p class="hero-subtitle">Herramientas diseñadas para hacer de este viaje una experiencia más organizada y tranquila.</p>
+                <div class="hero-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-baby"></i>
+                        <h3 id="currentWeek">--</h3>
+                        <p>Semana actual</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3 id="dueDate">--</h3>
+                        <p>Fecha probable de parto</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <h3 id="daysLeft">--</h3>
+                        <p>Días restantes</p>
+                    </div>
                 </div>
             </div>
-            <div class="hero-visual card">
-                <!-- Placeholder para imagen o resumen rápido -->
-                <p style="margin:0; color:var(--color-muted)">Semana actual: —</p>
-                <p style="margin-top:10px; font-size:0.95rem">Consejo rápido: Lleva un registro diario de tus síntomas para compartir con tu profesional de la salud.</p>
-            </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Grid: calculadora, sintomas, citas -->
-        <div class="grid">
-            <div class="card">
-                <h2 id="calcTitle">Calculadora de Fecha Probable de Parto</h2>
-                <form id="calcForm" class="card-form">
-                    <input type="date" id="fechaUltima" required>
-                    <button class="btn" type="submit">Calcular</button>
-                </form>
-                <p id="resultadoParto" aria-live="polite"></p>
-            </div>
-
-            <div class="card">
-                <h2 id="sintomasTitle">Registro de Síntomas</h2>
-                <form id="sintomasForm">
-                    <input type="text" id="sintoma" placeholder="Síntoma" required>
-                    <select id="estadoAnimo">
-                        <option value="Feliz">Feliz</option>
-                        <option value="Cansada">Cansada</option>
-                        <option value="Ansiosa">Ansiosa</option>
-                    </select>
-                    <button class="btn" type="submit">Agregar</button>
-                </form>
-                <table>
-                    <thead>
-                        <tr><th>Síntoma</th><th>Estado</th><th>Acción</th></tr>
-                    </thead>
-                    <tbody id="tablaSintomas"></tbody>
-                </table>
-            </div>
-
-            <div class="card">
-                <h2 id="citasTitle">Agenda de Citas Médicas</h2>
-                <form id="citasForm">
-                    <input type="date" id="fechaCita" required>
-                    <input type="time" id="horaCita" required>
-                    <input type="text" id="tipoCita" placeholder="Tipo de cita" required>
-                    <button class="btn" type="submit">Agregar</button>
-                </form>
-                <table>
-                    <thead>
-                        <tr><th>Fecha</th><th>Hora</th><th>Tipo</th><th>Acción</th></tr>
-                    </thead>
-                    <tbody id="tablaCitas"></tbody>
-                </table>
+    <!-- Sección Calculadora Mejorada -->
+    <section id="calculator" class="section calculator-section">
+        <div class="container">
+            <h2 class="section-title">Calculadora de Fecha Probable de Parto</h2>
+            <p class="section-subtitle">Ingresa la fecha de tu última menstruación para calcular la fecha probable de parto y la semana actual de embarazo.</p>
+            
+            <div class="calculator-container">
+                <div class="calculator-card">
+                    <form id="dueDateCalculator" class="calculator-form">
+                        <div class="form-group">
+                            <label for="lastPeriod"><i class="fas fa-calendar-day"></i> Fecha de Última Menstruación</label>
+                            <input type="date" id="lastPeriod" name="lastPeriod" required>
+                            <small class="form-hint">Selecciona el primer día de tu último período menstrual</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cycleLength"><i class="fas fa-arrows-alt-h"></i> Duración del Ciclo (opcional)</label>
+                            <div class="range-container">
+                                <input type="range" id="cycleLength" name="cycleLength" min="21" max="35" value="28">
+                                <span class="range-value" id="cycleValue">28 días</span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-calculator"></i> Calcular Fecha Probable
+                        </button>
+                        <button type="button" id="resetCalculator" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> Reiniciar
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="results-card" id="calculatorResults">
+                    <h3><i class="fas fa-baby-carriage"></i> Resultados de tu Embarazo</h3>
+                    <div class="results-grid">
+                        <div class="result-item">
+                            <div class="result-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="result-content">
+                                <h4>Fecha Probable de Parto</h4>
+                                <p id="resultDueDate">--</p>
+                            </div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-icon">
+                                <i class="fas fa-calendar-week"></i>
+                            </div>
+                            <div class="result-content">
+                                <h4>Semana Actual de Embarazo</h4>
+                                <p id="resultCurrentWeek">--</p>
+                            </div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-icon">
+                                <i class="fas fa-running"></i>
+                            </div>
+                            <div class="result-content">
+                                <h4>Trimestre</h4>
+                                <p id="resultTrimester">--</p>
+                            </div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-icon">
+                                <i class="fas fa-hourglass-half"></i>
+                            </div>
+                            <div class="result-content">
+                                <h4>Días Restantes</h4>
+                                <p id="resultDaysLeft">--</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pregnancy-progress">
+                        <h4>Progreso del Embarazo</h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="pregnancyProgress"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span>Semana 1</span>
+                            <span>Semana 40</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <footer style="margin-top:22px; text-align:center; color:var(--color-muted)">
-            <p>Proyecto Primer Latido - Autor: [Tu Nombre]</p>
-        </footer>
-    </main>
+    <!-- Sección Síntomas Mejorada -->
+    <section id="symptoms" class="section symptoms-section">
+        <div class="container">
+            <h2 class="section-title">Registro de Síntomas</h2>
+            <p class="section-subtitle">Lleva un control de los síntomas que experimentas durante tu embarazo.</p>
+            
+            <div class="symptoms-container">
+                <div class="symptoms-form-card">
+                    <form id="symptomForm">
+                        <div class="form-group">
+                            <label for="symptomName"><i class="fas fa-stethoscope"></i> Síntoma</label>
+                            <input type="text" id="symptomName" placeholder="Ej: Náuseas matutinas, fatiga..." required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="symptomIntensity"><i class="fas fa-chart-line"></i> Intensidad</label>
+                            <div class="intensity-selector">
+                                <div class="intensity-option" data-value="1">Leve</div>
+                                <div class="intensity-option" data-value="2">Moderado</div>
+                                <div class="intensity-option active" data-value="3">Fuerte</div>
+                            </div>
+                            <input type="hidden" id="symptomIntensity" value="3">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="symptomDate"><i class="fas fa-calendar"></i> Fecha</label>
+                            <input type="date" id="symptomDate" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="symptomNotes"><i class="fas fa-edit"></i> Notas adicionales</label>
+                            <textarea id="symptomNotes" rows="3" placeholder="Detalles adicionales sobre el síntoma..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus-circle"></i> Agregar Síntoma
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="symptoms-list-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-clipboard-list"></i> Síntomas Registrados</h3>
+                        <div class="symptoms-stats">
+                            <span id="totalSymptoms">0 síntomas</span>
+                            <button id="clearSymptoms" class="btn-small btn-danger">
+                                <i class="fas fa-trash"></i> Limpiar Todo
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="symptoms-filters">
+                        <button class="filter-btn active" data-filter="all">Todos</button>
+                        <button class="filter-btn" data-filter="1">Leves</button>
+                        <button class="filter-btn" data-filter="2">Moderados</button>
+                        <button class="filter-btn" data-filter="3">Fuertes</button>
+                    </div>
+                    
+                    <div class="symptoms-list" id="symptomsList">
+                        <!-- Los síntomas se cargarán aquí dinámicamente -->
+                        <div class="empty-state">
+                            <i class="fas fa-heartbeat"></i>
+                            <p>No hay síntomas registrados aún. ¡Agrega tu primer síntoma!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <script src="main.js"></script>
+    <!-- Sección Citas Médicas -->
+    <section id="appointments" class="section appointments-section">
+        <div class="container">
+            <h2 class="section-title">Agenda de Citas Médicas</h2>
+            <p class="section-subtitle">Organiza y lleva un registro de todas tus citas médicas prenatales.</p>
+            
+            <div class="appointments-container">
+                <div class="appointments-form-card">
+                    <form id="appointmentForm">
+                        <div class="form-group">
+                            <label for="appointmentType"><i class="fas fa-user-md"></i> Tipo de Cita</label>
+                            <select id="appointmentType" required>
+                                <option value="">Selecciona un tipo</option>
+                                <option value="control">Control prenatal</option>
+                                <option value="ecografia">Ecografía</option>
+                                <option value="analisis">Análisis de laboratorio</option>
+                                <option value="especialista">Especialista</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="appointmentDate"><i class="fas fa-calendar-alt"></i> Fecha y Hora</label>
+                            <input type="datetime-local" id="appointmentDate" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="appointmentDoctor"><i class="fas fa-user-md"></i> Médico/Especialista</label>
+                            <input type="text" id="appointmentDoctor" placeholder="Nombre del médico" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="appointmentLocation"><i class="fas fa-map-marker-alt"></i> Lugar/Dirección</label>
+                            <input type="text" id="appointmentLocation" placeholder="Clínica, hospital o dirección" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="appointmentNotes"><i class="fas fa-edit"></i> Notas</label>
+                            <textarea id="appointmentNotes" rows="3" placeholder="Preparación, preguntas para el médico..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-calendar-plus"></i> Agregar Cita
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="appointments-list-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-calendar-check"></i> Próximas Citas</h3>
+                        <div class="appointments-stats">
+                            <span id="upcomingAppointments">0 citas próximas</span>
+                            <button id="clearAppointments" class="btn-small btn-danger">
+                                <i class="fas fa-trash"></i> Limpiar Todo
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="appointments-filters">
+                        <button class="filter-btn active" data-filter="all">Todas</button>
+                        <button class="filter-btn" data-filter="upcoming">Próximas</button>
+                        <button class="filter-btn" data-filter="past">Pasadas</button>
+                    </div>
+                    
+                    <div class="appointments-list" id="appointmentsList">
+                        <!-- Las citas se cargarán aquí dinámicamente -->
+                        <div class="empty-state">
+                            <i class="fas fa-calendar-times"></i>
+                            <p>No hay citas programadas. ¡Agrega tu primera cita médica!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Consejos y Seguimiento -->
+    <section id="advice" class="section advice-section">
+        <div class="container">
+            <h2 class="section-title">Consejos por Trimestre</h2>
+            <p class="section-subtitle">Información útil y recomendaciones para cada etapa de tu embarazo.</p>
+            
+            <div class="advice-container">
+                <div class="advice-tabs">
+                    <button class="advice-tab active" data-tab="1">Primer Trimestre</button>
+                    <button class="advice-tab" data-tab="2">Segundo Trimestre</button>
+                    <button class="advice-tab" data-tab="3">Tercer Trimestre</button>
+                </div>
+                
+                <div class="advice-content">
+                    <div class="advice-tab-content active" id="tab1">
+                        <h3><i class="fas fa-seedling"></i> Primer Trimestre (Semanas 1-13)</h3>
+                        <div class="advice-grid">
+                            <div class="advice-card">
+                                <i class="fas fa-apple-alt"></i>
+                                <h4>Nutrición</h4>
+                                <p>Importancia del ácido fólico, alimentos ricos en hierro y cómo manejar las náuseas matutinas.</p>
+                            </div>
+                            <div class="advice-card">
+                                <i class="fas fa-running"></i>
+                                <h4>Ejercicio</h4>
+                                <p>Actividades seguras durante el primer trimestre y ejercicios recomendados.</p>
+                            </div>
+                            <div class="advice-card">
+                                <i class="fas fa-bed"></i>
+                                <h4>Descanso</h4>
+                                <p>La fatiga es común; consejos para mejorar la calidad del sueño.</p>
+                            </div>
+                            <div class="advice-card">
+                                <i class="fas fa-clipboard-check"></i>
+                                <h4>Primeras Citas</h4>
+                                <p>Qué esperar en tu primera consulta prenatal y pruebas importantes.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="advice-tab-content" id="tab2">
+                        <h3><i class="fas fa-leaf"></i> Segundo Trimestre (Semanas 14-27)</h3>
+                        <!-- Contenido similar para segundo trimestre -->
+                    </div>
+                    
+                    <div class="advice-tab-content" id="tab3">
+                        <h3><i class="fas fa-baby"></i> Tercer Trimestre (Semanas 28-40)</h3>
+                        <!-- Contenido similar para tercer trimestre -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nueva Sección: Seguimiento del Embarazo -->
+    <section id="tracker" class="section tracker-section">
+        <div class="container">
+            <h2 class="section-title">Seguimiento del Embarazo</h2>
+            <p class="section-subtitle">Visualiza el progreso de tu embarazo semana a semana.</p>
+            
+            <div class="tracker-container">
+                <div class="week-tracker">
+                    <h3>Semana <span id="trackerWeek">--</span></h3>
+                    <div class="week-info">
+                        <div class="week-image" id="weekImage">
+                            <img src="https://via.placeholder.com/300x200/FFD6E7/333333?text=Imagen+de+referencia" alt="Desarrollo del bebé">
+                        </div>
+                        <div class="week-details">
+                            <h4 id="weekTitle">Título de la semana</h4>
+                            <p id="weekDescription">Descripción del desarrollo del bebé en esta semana.</p>
+                            <div class="week-stats">
+                                <div class="week-stat">
+                                    <i class="fas fa-ruler-vertical"></i>
+                                    <span id="weekSize">Tamaño del bebé</span>
+                                </div>
+                                <div class="week-stat">
+                                    <i class="fas fa-weight"></i>
+                                    <span id="weekWeight">Peso del bebé</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="week-navigation">
+                        <button id="prevWeek" class="btn btn-secondary">
+                            <i class="fas fa-chevron-left"></i> Semana Anterior
+                        </button>
+                        <button id="nextWeek" class="btn btn-secondary">
+                            Semana Siguiente <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="milestones-card">
+                    <h3><i class="fas fa-flag-checkered"></i> Hitos Importantes</h3>
+                    <div class="milestones-list">
+                        <div class="milestone">
+                            <div class="milestone-icon">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <div class="milestone-content">
+                                <h4>Primer Latido</h4>
+                                <p>Semana 5-6</p>
+                            </div>
+                            <div class="milestone-status" data-week="6">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                        </div>
+                        <!-- Más hitos -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Mejorado -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="logo">
+                        <i class="fas fa-heartbeat"></i>
+                        <h3>Primer Latido</h3>
+                    </div>
+                    <p>Acompañando cada etapa de tu embarazo con herramientas útiles y confiables.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul>
+                        <li><a href="#calculator">Calculadora</a></li>
+                        <li><a href="#symptoms">Registro de Síntomas</a></li>
+                        <li><a href="#appointments">Citas Médicas</a></li>
+                        <li><a href="#advice">Consejos</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Recursos</h4>
+                    <ul>
+                        <li><a href="#">Guía de Embarazo</a></li>
+                        <li><a href="#">Alimentación Saludable</a></li>
+                        <li><a href="#">Ejercicios Prenatales</a></li>
+                        <li><a href="#">Preparación para el Parto</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Importante</h4>
+                    <p>Este sitio es una herramienta informativa. Siempre consulta con tu médico para decisiones relacionadas con tu salud y embarazo.</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 Primer Latido. Diseñado con <i class="fas fa-heart"></i> para futuras mamás.</p>
+                <p><a href="#" class="privacy-link">Política de Privacidad</a> | <a href="#" class="terms-link">Términos de Uso</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botón flotante para volver arriba -->
+    <button id="backToTop" class="back-to-top" aria-label="Volver arriba">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="./js/utils.js"></script>
+    <script src="./js/calculator.js"></script>
+    <script src="./js/symptoms.js"></script>
+    <script src="./js/appointments.js"></script>
+    <script src="./js/app.js"></script>
 </body>
 </html>
