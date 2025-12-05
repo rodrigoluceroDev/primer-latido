@@ -257,33 +257,67 @@ function showRegisterModal() {
 function handleRegisterSubmit(e) {
     e.preventDefault();
     
-    const name = document.getElementById('registerName').value.trim();
-    const email = document.getElementById('registerEmail').value.trim();
-    const normalizedEmail = email.toLowerCase();
-    const password = document.getElementById('registerPassword').value;
-    const confirmPassword = document.getElementById('registerConfirmPassword').value;
-    const dueDate = document.getElementById('dueDate').value;
-    const acceptTerms = document.getElementById('acceptTerms').checked;
+    const nameField = document.getElementById('registerName');
+    const emailField = document.getElementById('registerEmail');
+    const passwordField = document.getElementById('registerPassword');
+    const confirmPasswordField = document.getElementById('registerConfirmPassword');
+    const dueDateField = document.getElementById('dueDate');
+    const acceptTermsField = document.getElementById('acceptTerms');
     
-    // Validaciones
+    const name = nameField.value.trim();
+    const email = emailField.value.trim();
+    const normalizedEmail = email.toLowerCase();
+    const password = passwordField.value;
+    const confirmPassword = confirmPasswordField.value;
+    const dueDate = dueDateField.value;
+    const acceptTerms = acceptTermsField.checked;
+    
+    // Validaciones con enfoque específico en campos
     if (name.length < 2) {
         showError('El nombre debe tener al menos 2 caracteres');
+        nameField.focus();
+        nameField.classList.add('error');
         return;
+    } else {
+        nameField.classList.remove('error');
     }
     
     if (!validateEmail(email)) {
         showError('Por favor, ingresa un correo electrónico válido');
+        emailField.focus();
+        emailField.classList.add('error');
+        return;
+    } else {
+        emailField.classList.remove('error');
+    }
+    
+    // Verificar si el email ya existe
+    const users = JSON.parse(localStorage.getItem('primerLatidoUsers') || '[]');
+    const userExists = users.some(u => (u.email || '').trim().toLowerCase() === normalizedEmail);
+    
+    if (userExists) {
+        showError('Este correo electrónico ya está registrado');
+        emailField.focus();
+        emailField.classList.add('error');
         return;
     }
     
     if (password.length < 6) {
         showError('La contraseña debe tener al menos 6 caracteres');
+        passwordField.focus();
+        passwordField.classList.add('error');
         return;
+    } else {
+        passwordField.classList.remove('error');
     }
     
     if (password !== confirmPassword) {
         showError('Las contraseñas no coinciden');
+        confirmPasswordField.focus();
+        confirmPasswordField.classList.add('error');
         return;
+    } else {
+        confirmPasswordField.classList.remove('error');
     }
     
     if (!acceptTerms) {
@@ -303,26 +337,14 @@ function handleRegisterSubmit(e) {
         const newUser = {
             id: Date.now(),
             name: name,
-            email: email,
+            email: normalizedEmail,
             password: password, // En producción, esto estaría hasheado
             dueDate: dueDate,
             createdAt: new Date().toISOString(),
             profileComplete: false
         };
         
-        // Guardar usuario en localStorage (simulación)
-        const users = JSON.parse(localStorage.getItem('primerLatidoUsers') || '[]');
-        const userExists = users.some(u => (u.email || '').trim().toLowerCase() === normalizedEmail);
-        
-        if (userExists) {
-            showError('Este correo electrónico ya está registrado');
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-            return;
-        }
-        
-        // Asegurar que el email guardado esté normalizado
-        newUser.email = normalizedEmail;
+        // Guardar usuario en localStorage
         users.push(newUser);
         localStorage.setItem('primerLatidoUsers', JSON.stringify(users));
         
@@ -334,10 +356,13 @@ function handleRegisterSubmit(e) {
         
         // Cerrar modal y redirigir
         setTimeout(() => {
-            document.getElementById('registerModal').style.display = 'none';
+            const registerModal = document.getElementById('registerModal');
+            if (registerModal) {
+                registerModal.style.display = 'none';
+            }
             window.location.href = './';
         }, 1500);
-    }, 2000);
+    }, 800);
 }
 
 /**
@@ -494,6 +519,13 @@ function logoutAndClearData() {
     localStorage.removeItem('primerLatidoLastWeek');
     localStorage.removeItem('primerLatidoLastTrimester');
     localStorage.removeItem('primerLatidoLastPeriod');
+    localStorage.removeItem('primerLatidoAppointments');
+    localStorage.removeItem('primerLatidoSymptoms');
+
+    // Limpiar también sessionStorage
+    sessionStorage.removeItem('primerLatidoPregnancyData');
+    sessionStorage.removeItem('primerLatidoAppointments');
+    sessionStorage.removeItem('primerLatidoSymptoms');
 
     // Notificar al resto de la app que se cerró la sesión
     try {

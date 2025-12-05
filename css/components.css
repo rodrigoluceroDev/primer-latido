@@ -763,3 +763,51 @@ button.nav-link:focus {
     background-color: var(--primary-dark);
     transform: translateY(-5px);
 }
+
+/* Estilos para validación de formularios */
+input.error,
+textarea.error,
+select.error {
+    border-color: #D32F2F !important;
+    background-color: rgba(211, 47, 47, 0.05);
+}
+
+input.error:focus,
+textarea.error:focus,
+select.error:focus {
+    border-color: #D32F2F !important;
+    box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+}
+
+.error-message {
+    color: #D32F2F;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.error-message::before {
+    content: "⚠";
+    font-size: 0.9rem;
+}
+
+/* Estilos para campos de formulario */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+textarea,
+select {
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--primary-dark);
+}

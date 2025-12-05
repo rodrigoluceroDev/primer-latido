@@ -19,6 +19,25 @@ function initDueDateCalculator() {
         e.preventDefault();
         calculateDueDate();
     });
+
+    // IMPORTANTE: Agregar listener para actualización automática de datos de embarazo
+    window.addEventListener('pregnancyDataUpdated', function(e) {
+        if (e.detail && e.detail.dueDate) {
+            // Actualizar el formulario con los datos nuevos
+            const lastPeriodInput = document.getElementById('lastPeriod');
+            if (lastPeriodInput && e.detail.lastPeriod) {
+                lastPeriodInput.value = e.detail.lastPeriod;
+            }
+            // Actualizar UI inmediatamente sin esperar F5
+            updateCalculatorResults(
+                new Date(e.detail.dueDate),
+                e.detail.currentWeek,
+                e.detail.currentDay,
+                e.detail.daysLeft,
+                e.detail.trimester
+            );
+        }
+    });
     
     // Si existía una fecha guardada, cargarla y calcular automáticamente
     const savedLast = localStorage.getItem('primerLatidoLastPeriod');
@@ -98,6 +117,8 @@ function calculateDueDate() {
     // Guardar datos de embarazo en localStorage y notificar al resto de la app
     const pregnancyData = {
         dueDate: dueDate.toISOString(),
+        lastPeriod: lastPeriodInput.value,
+        cycleLength: cycleLength,
         currentWeek: currentWeek,
         currentDay: currentDay,
         daysLeft: daysLeft,
@@ -106,6 +127,8 @@ function calculateDueDate() {
 
     try {
         localStorage.setItem('primerLatidoPregnancyData', JSON.stringify(pregnancyData));
+        // También guardar en sessionStorage para acceso inmediato
+        sessionStorage.setItem('primerLatidoPregnancyData', JSON.stringify(pregnancyData));
     } catch (e) {
         console.error('No se pudo guardar primerLatidoPregnancyData:', e);
     }

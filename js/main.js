@@ -63,6 +63,8 @@ function initAppState() {
         } catch (e) {
             console.error('Error al cargar usuario:', e);
             AppState.currentUser = null;
+            // Si no se puede parsear, limpiar datos corruptos
+            localStorage.removeItem('primerLatidoCurrentUser');
         }
     }
     
@@ -73,16 +75,29 @@ function initAppState() {
             AppState.settings = { ...AppState.settings, ...JSON.parse(savedSettings) };
         } catch (e) {
             console.error('Error al cargar configuración:', e);
+            // Limpiar configuración corrupida
+            localStorage.removeItem('primerLatidoSettings');
         }
     }
     
-    // Cargar datos del embarazo
-    const savedPregnancyData = localStorage.getItem('primerLatidoPregnancyData');
-    if (savedPregnancyData) {
-        try {
-            AppState.pregnancyData = JSON.parse(savedPregnancyData);
-        } catch (e) {
-            console.error('Error al cargar datos del embarazo:', e);
+    // IMPORTANTE: Si no hay usuario activo, limpiar datos de embarazo
+    // para evitar que persistan entre sesiones de diferentes usuarios
+    if (!AppState.currentUser) {
+        localStorage.removeItem('primerLatidoPregnancyData');
+        localStorage.removeItem('primerLatidoLastPeriod');
+        localStorage.removeItem('primerLatidoAppointments');
+        localStorage.removeItem('primerLatidoSymptoms');
+        sessionStorage.removeItem('primerLatidoPregnancyData');
+    } else {
+        // Cargar datos del embarazo solo si hay usuario activo
+        const savedPregnancyData = localStorage.getItem('primerLatidoPregnancyData');
+        if (savedPregnancyData) {
+            try {
+                AppState.pregnancyData = JSON.parse(savedPregnancyData);
+            } catch (e) {
+                console.error('Error al cargar datos del embarazo:', e);
+                localStorage.removeItem('primerLatidoPregnancyData');
+            }
         }
     }
 }
