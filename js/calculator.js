@@ -90,12 +90,8 @@ function calculateDueDate() {
     
     // Actualizar resultados en la UI
     updateCalculatorResults(dueDate, currentWeek, currentDay, daysLeft, trimester);
-    
-    // Actualizar banner principal
-    updatePregnancyBanner(currentWeek, dueDate, daysLeft);
-    
-    // Actualizar seguimiento
-    updatePregnancyTracker(currentWeek);
+    // Los cambios de banner/track se realizan mediante el evento personalizado
+    // para mantener compatibilidad entre módulos y evitar colisiones de nombres.
     
     showNotification('Fecha probable calculada correctamente', 'success');
 
@@ -114,8 +110,13 @@ function calculateDueDate() {
         console.error('No se pudo guardar primerLatidoPregnancyData:', e);
     }
 
-    // Disparar evento personalizado para que main.js actualice AppState si corresponde
-    window.dispatchEvent(new CustomEvent('pregnancyDataUpdated', { detail: pregnancyData }));
+    // Evento legacy/nuevo: emitir ambos nombres para compatibilidad con distintos listeners
+    try {
+        window.dispatchEvent(new CustomEvent('pregnancyDataUpdated', { detail: pregnancyData }));
+        window.dispatchEvent(new CustomEvent('dueDateCalculated', { detail: pregnancyData }));
+    } catch (e) {
+        console.error('Error dispatching pregnancy events:', e);
+    }
 }
 
 function updateCalculatorResults(dueDate, week, day, daysLeft, trimester) {

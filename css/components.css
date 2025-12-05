@@ -381,7 +381,7 @@
     padding: 6px 12px;
     background-color: var(--error);
     border: none;
-    border-radius: 4px;
+    border-radius: 12px;
     cursor: pointer;
     font-size: 0.9rem;
     transition: var(--transition);
@@ -389,6 +389,58 @@
 
 .delete-btn:hover {
     background-color: #F0B3B3;
+}
+
+/* Botón de editar: estilo similar a eliminar para coherencia visual */
+.edit-btn {
+    padding: 6px 12px;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    color: var(--text-color);
+}
+
+.edit-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Ajustes de paleta y forma para items de síntomas */
+.symptom-item {
+    background-color: #F7FEFB; /* tono muy suave por defecto */
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--primary-color);
+}
+
+.symptom-item.intensity-1 {
+    background-color: #E9FBF6; /* mint claro */
+    border-left-color: #57D9B6;
+}
+
+.symptom-item.intensity-2 {
+    background-color: #FFF9E8; /* melocotón claro */
+    border-left-color: #FFCC66;
+}
+
+.symptom-item.intensity-3 {
+    background-color: #FFF0F2; /* rosa claro */
+    border-left-color: #FF97A6;
+}
+
+/* Hacer iconos y acciones más armónicos */
+.item-actions button i {
+    margin-right: 6px;
+}
+
+/* Botón Limpiar Todo específico: suavizar y alinearlo con otros */
+#clearSymptoms, #clearAppointments {
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 0.95rem;
 }
 
 .empty-state {
@@ -530,6 +582,19 @@
 
 .milestones-list {
     margin-top: 1.5rem;
+}
+
+/* Hacer el panel de hitos desplazable si hay muchos elementos */
+.milestones-card .milestones-list {
+    max-height: 360px;
+    overflow-y: auto;
+    padding-right: 8px; /* espacio para el scroll */
+}
+
+@media (max-width: 768px) {
+    .milestones-card .milestones-list {
+        max-height: 480px;
+    }
 }
 
 .milestone {

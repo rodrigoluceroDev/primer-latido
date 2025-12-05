@@ -285,12 +285,22 @@ class AdviceSystem {
         
         // Cargar datos iniciales
         this.loadInitialData();
+
+        // Poblar consejos de cada trimestre 
+        this.populateAllTrimesterAdvice();
         
         // Actualizar display
         this.updateDisplay();
         
         this.initialized = true;
         console.log('Sistema de consejos inicializado');
+    }
+
+    /**
+     * Pobla las tres pestañas de trimestre con sus consejos correspondientes
+     */
+    populateAllTrimesterAdvice() {
+        [1,2,3].forEach(t => this.showTrimesterAdvice(t));
     }
 
     /**
@@ -598,9 +608,9 @@ class AdviceSystem {
         const milestonesContainer = document.querySelector('.milestones-list');
         if (!milestonesContainer) return;
         
-        // Usar la lista completa de hitos semanales para mostrar al menos un hito por semana
+        // Mostrar todos los hitos ordenados (permitir scroll en el panel)
         const relevantMilestones = WEEKLY_MILESTONES_FULL
-            .filter(milestone => milestone.week <= this.currentWeek + 4)
+            .slice()
             .sort((a, b) => a.week - b.week);
         
         // Marcar hitos completados

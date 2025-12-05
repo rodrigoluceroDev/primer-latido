@@ -237,6 +237,13 @@ function setupEventListeners() {
         updatePregnancyBanner(e.detail);
         updatePregnancyTrackerDisplay(e.detail.currentWeek);
     });
+    // Compatibilidad con evento alternativo emitido por la calculadora
+    window.addEventListener('pregnancyDataUpdated', function(e) {
+        updatePregnancyBanner(e.detail);
+        if (e.detail && e.detail.currentWeek) {
+            updatePregnancyTrackerDisplay(e.detail.currentWeek);
+        }
+    });
     
     // Notificaciones
     window.addEventListener('showNotification', function(e) {
@@ -298,6 +305,27 @@ function setDefaultDates() {
         const defaultDate = new Date(today);
         defaultDate.setDate(defaultDate.getDate() - 28);
         lastPeriod.value = defaultDate.toISOString().split('T')[0];
+    }
+
+    // Cargar datos de embarazo guardados y actualizar la UI si están disponibles
+    try {
+        const pregnancyData = JSON.parse(localStorage.getItem('primerLatidoPregnancyData') || 'null');
+        if (pregnancyData && pregnancyData.dueDate) {
+            // Actualizar banner principal
+            updatePregnancyBanner(pregnancyData);
+
+            // Actualizar resultados de la calculadora si la función está disponible
+            if (typeof updateCalculatorResults === 'function') {
+                updateCalculatorResults(new Date(pregnancyData.dueDate), pregnancyData.currentWeek || 1, pregnancyData.currentDay || 1, pregnancyData.daysLeft || 0, pregnancyData.trimester || '');
+            }
+
+            // Actualizar tracker de embarazo
+            if (pregnancyData.currentWeek) {
+                updatePregnancyTrackerDisplay(pregnancyData.currentWeek);
+            }
+        }
+    } catch (e) {
+        console.error('Error cargando primerLatidoPregnancyData:', e);
     }
 }
 
