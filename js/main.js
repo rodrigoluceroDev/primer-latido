@@ -25,12 +25,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar estado
     initAppState();
 
-    // Si no hay usuario autenticado, permitimos continuar en modo invitado
-    // (no redirigimos automáticamente a `login.html`). La app mostrará
-    // un banner informando y bloqueará acciones protegidas.
-    if (!AppState.currentUser) {
-        console.log('Sin sesión activa: iniciando en modo invitado');
-        // Continuar la inicialización de la página principal como invitado
+    // IMPORTANTE: Si no hay usuario autenticado, redirigir al login
+    // (excepto si ya estamos en la página de login)
+    if (!AppState.currentUser && !window.location.pathname.includes('login.html')) {
+        console.log('No hay sesión activa: redirigiendo al login');
+        window.location.href = './login.html';
+        return; // Detener ejecución inmediata
     }
 
     // Inicializar componentes según la página
