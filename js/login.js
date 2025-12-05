@@ -447,12 +447,37 @@ function logoutUser() {
     window.location.href = 'login.html';
 }
 
+// Emitir cierre de sesión desde el menú u otros módulos
+function logoutAndClearData() {
+    // Limpiar datos de sesión
+    localStorage.removeItem('primerLatidoCurrentUser');
+    localStorage.removeItem('primerLatidoSessionExpiry');
+    sessionStorage.removeItem('primerLatidoSession');
+
+    // Limpiar datos relacionados al embarazo para que no persistan entre usuarios
+    localStorage.removeItem('primerLatidoPregnancyData');
+    localStorage.removeItem('primerLatidoLastWeek');
+    localStorage.removeItem('primerLatidoLastTrimester');
+    localStorage.removeItem('primerLatidoLastPeriod');
+
+    // Notificar al resto de la app que se cerró la sesión
+    try {
+        window.dispatchEvent(new CustomEvent('userLoggedOut'));
+    } catch (e) {
+        console.warn('No se pudo emitir userLoggedOut:', e);
+    }
+
+    // Redirigir al login
+    window.location.href = 'login.html';
+}
+
 // Exportar funciones para uso en otros archivos
 window.loginUtils = {
     validateEmail,
     showError,
     showSuccess,
     logoutUser,
+    logoutAndClearData,
     createUserSession,
     checkExistingSession
 };

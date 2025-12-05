@@ -498,11 +498,24 @@ function showGuestBanner() {
  */
 function handleLogout() {
     if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
-        // Limpiar datos de sesión
+        // Si existe la utilidad de login, usar su función para limpiar datos correctamente
+        if (window.loginUtils && typeof window.loginUtils.logoutAndClearData === 'function') {
+            window.loginUtils.logoutAndClearData();
+            return;
+        }
+
+        // Fallback: limpiar datos de sesión y datos de embarazo
         localStorage.removeItem('primerLatidoCurrentUser');
         localStorage.removeItem('primerLatidoSessionExpiry');
         sessionStorage.removeItem('primerLatidoSession');
-        
+        localStorage.removeItem('primerLatidoPregnancyData');
+        localStorage.removeItem('primerLatidoLastWeek');
+        localStorage.removeItem('primerLatidoLastTrimester');
+        localStorage.removeItem('primerLatidoLastPeriod');
+
+        // Notificar al resto de la app
+        try { window.dispatchEvent(new CustomEvent('userLoggedOut')); } catch (e) {}
+
         // Redirigir al login
         window.location.href = 'login.html';
     }
@@ -583,6 +596,12 @@ function initGlobalListeners() {
         if (e.detail && e.detail.dueDate) {
             AppState.pregnancyData = e.detail;
             localStorage.setItem('primerLatidoPregnancyData', JSON.stringify(e.detail));
+            // Actualizar UI inmediatamente cuando llegan nuevos datos de embarazo
+            try {
+                updatePregnancyInfo();
+            } catch (err) {
+                console.warn('No se pudo actualizar la UI del embarazo automáticamente:', err);
+            }
         }
     });
     
@@ -590,6 +609,22 @@ function initGlobalListeners() {
     window.addEventListener('userLoggedIn', function(e) {
         AppState.currentUser = e.detail;
         updateUserUI();
+    });
+
+    // Manejar cierre de sesión desde otros módulos
+    window.addEventListener('userLoggedOut', function() {
+        // Limpiar estado local en memoria
+        AppState.currentUser = null;
+        AppState.pregnancyData = { dueDate: null, currentWeek: null, trimester: null, daysLeft: null };
+
+        // Actualizar UI
+        updateUserUI();
+        updatePregnancyBanner();
+        // Eliminar claves sensibles de localStorage
+        localStorage.removeItem('primerLatidoPregnancyData');
+        localStorage.removeItem('primerLatidoLastWeek');
+        localStorage.removeItem('primerLatidoLastTrimester');
+        localStorage.removeItem('primerLatidoLastPeriod');
     });
     
     // Guardar configuración cuando cambia

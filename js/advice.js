@@ -267,6 +267,10 @@ class AdviceSystem {
         this.currentWeek = 1;
         this.currentTrimester = 1;
         this.initialized = false;
+        // Configuración de la ventana de hitos: radio en semanas (±radius)
+        this.milestoneRadius = 4; // muestra por defecto ±4 semanas
+        // Centro de la ventana de hitos (semanas). Se inicializa en la semana actual.
+        this.milestoneCenter = this.currentWeek;
     }
 
     /**
@@ -316,14 +320,21 @@ class AdviceSystem {
                 // Actualizar pestaña activa
                 tabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-                
-                // Mostrar contenido del trimestre
+
+                // Determinar trimestre seleccionado
                 const trimester = parseInt(tab.dataset.tab);
+
+                // Mostrar el contenido de pestaña correspondiente y ocultar los demás
+                document.querySelectorAll('.advice-tab-content').forEach(content => content.classList.remove('active'));
+                const contentPane = document.getElementById(`tab${trimester}`);
+                if (contentPane) contentPane.classList.add('active');
+
+                // Actualizar contenido del trimestre (poblar consejos)
                 this.showTrimesterAdvice(trimester);
-                
+
                 // Actualizar trimestre actual
                 this.currentTrimester = trimester;
-                
+
                 // Guardar preferencia
                 localStorage.setItem('primerLatidoLastTrimester', trimester);
             });
@@ -375,6 +386,7 @@ class AdviceSystem {
      */
     loadInitialData() {
         // Actualizar hitos basados en la semana actual
+        this.milestoneCenter = this.currentWeek;
         this.updateMilestones();
         
         // Cargar última semana vista
@@ -451,6 +463,8 @@ class AdviceSystem {
         }
         
         this.currentWeek = newWeek;
+        // recenter la ventana de hitos en la nueva semana
+        this.milestoneCenter = this.currentWeek;
         this.updateWeekDisplay();
         
         // Guardar última semana vista
@@ -607,20 +621,29 @@ class AdviceSystem {
     updateMilestones() {
         const milestonesContainer = document.querySelector('.milestones-list');
         if (!milestonesContainer) return;
-        
-        // Mostrar todos los hitos ordenados (permitir scroll en el panel)
+        // Mostrar solo una ventana centrada alrededor de `milestoneCenter` con radio `milestoneRadius`.
+        const radius = this.milestoneRadius;
+        const center = Math.max(1, Math.min(40, this.milestoneCenter || this.currentWeek));
+        const startWeek = Math.max(1, center - radius);
+        const endWeek = Math.min(40, center + radius);
+
+        // Obtener hitos relevantes dentro de la ventana
         const relevantMilestones = WEEKLY_MILESTONES_FULL
             .slice()
-            .sort((a, b) => a.week - b.week);
-        
+            .sort((a, b) => a.week - b.week)
+            .filter(m => m.week >= startWeek && m.week <= endWeek);
+
         // Marcar hitos completados
         relevantMilestones.forEach(milestone => {
             milestone.completed = milestone.week <= this.currentWeek;
         });
-        
-        // Actualizar HTML
-        milestonesContainer.innerHTML = relevantMilestones.map(milestone => `
-            <div class="milestone ${milestone.completed ? 'completed' : ''}">
+
+        // Construir HTML con controles de paginación
+        const prevDisabled = startWeek <= 1;
+        const nextDisabled = endWeek >= 40;
+
+        const listHtml = relevantMilestones.map(milestone => `
+            <div class="milestone ${milestone.completed ? 'completed' : ''}" data-week="${milestone.week}">
                 <div class="milestone-icon">
                     <i class="fas fa-${milestone.icon}"></i>
                 </div>
@@ -634,16 +657,48 @@ class AdviceSystem {
                 </div>
             </div>
         `).join('');
-        
-        // Si no hay hitos próximos, mostrar mensaje
-        if (relevantMilestones.length === 0) {
-            milestonesContainer.innerHTML = `
-                <div class="empty-milestones">
-                    <i class="fas fa-flag-checkered"></i>
-                    <p>¡Felicidades! Has completado todos los hitos importantes del embarazo.</p>
-                </div>
-            `;
+
+        // Si no hay hitos en la ventana, mostrar mensaje de vacío
+        const emptyHtml = `
+            <div class="empty-milestones">
+                <i class="fas fa-flag-checkered"></i>
+                <p>¡No hay hitos en este rango de semanas.</p>
+            </div>
+        `;
+
+        milestonesContainer.innerHTML = `
+            <div class="milestones-window">${relevantMilestones.length ? listHtml : emptyHtml}</div>
+            <div class="milestones-pagination">
+                <button class="milestone-page-btn" id="milestonePrev" ${prevDisabled ? 'disabled' : ''} aria-label="Anterior">&larr; Anterior</button>
+                <div class="milestone-range">Semanas ${startWeek} - ${endWeek}</div>
+                <button class="milestone-page-btn" id="milestoneNext" ${nextDisabled ? 'disabled' : ''} aria-label="Siguiente">Siguiente &rarr;</button>
+            </div>
+        `;
+
+        // Añadir listeners a los botones de paginación
+        const prevBtn = document.getElementById('milestonePrev');
+        const nextBtn = document.getElementById('milestoneNext');
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => this.shiftMilestoneWindow(- (radius * 2 + 1)));
         }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => this.shiftMilestoneWindow(radius * 2 + 1));
+        }
+
+        // Permitir click en un hito para saltar a esa semana
+        const milestoneItems = milestonesContainer.querySelectorAll('.milestone');
+        milestoneItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const w = parseInt(item.dataset.week);
+                if (!isNaN(w)) {
+                    this.currentWeek = w;
+                    this.milestoneCenter = w;
+                    this.updateWeekDisplay();
+                }
+            });
+        });
     }
 
     /**
@@ -662,6 +717,19 @@ class AdviceSystem {
             nextBtn.disabled = this.currentWeek >= 40;
             nextBtn.title = this.currentWeek >= 40 ? '¡Última semana!' : 'Ver semana siguiente';
         }
+    }
+
+    /**
+     * Desplaza la ventana de hitos en `delta` semanas (positivo o negativo)
+     */
+    shiftMilestoneWindow(delta) {
+        const minCenter = 1 + this.milestoneRadius;
+        const maxCenter = 40 - this.milestoneRadius;
+        let newCenter = (this.milestoneCenter || this.currentWeek) + delta;
+        if (newCenter < minCenter) newCenter = minCenter;
+        if (newCenter > maxCenter) newCenter = maxCenter;
+        this.milestoneCenter = Math.round(newCenter);
+        this.updateMilestones();
     }
 
     /**
@@ -1020,6 +1088,37 @@ adviceStyles.textContent = `
         font-size: 3rem;
         margin-bottom: 15px;
         color: #FFD6E7;
+    }
+    
+    /* Controles de paginación para la ventana de hitos */
+    .milestones-pagination {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    .milestones-pagination .milestone-range {
+        font-size: 0.9rem;
+        color: #666;
+        text-align: center;
+        flex: 1 1 auto;
+    }
+
+    .milestone-page-btn {
+        background: #FFFFFF;
+        border: 1px solid #E0E0E0;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        color: #333;
+        min-width: 90px;
+    }
+
+    .milestone-page-btn[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
     
     /* Responsive */

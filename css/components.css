@@ -5,7 +5,7 @@
     position: sticky;
     top: 0;
     z-index: 1000;
-    padding: 15px 0;
+    padding: 10px 0;
 }
 
 .navbar {
@@ -38,6 +38,38 @@
 .nav-menu {
     display: flex;
     gap: 2rem;
+}
+
+/* Ajustes para el menú de usuario: mantener inline y espaciamiento consistente */
+#userMenu .nav-user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+#userMenu .nav-user .user-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#userMenu .nav-user .user-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Estilizar botones que usan la clase .nav-link para que se vean como enlaces del nav */
+button.nav-link {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+}
+
+button.nav-link:focus {
+    outline: 2px solid rgba(0,0,0,0.08);
+    outline-offset: 2px;
 }
 
 .nav-link {
