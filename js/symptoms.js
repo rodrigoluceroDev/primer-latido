@@ -218,3 +218,23 @@ function updateSymptomsStats() {
         totalSymptoms.textContent = `${symptoms.length} ${symptoms.length === 1 ? 'síntoma' : 'síntomas'}`;
     }
 }
+
+// Exponer un manager para que la app principal pueda delegar carga inicial
+window.symptomsManager = {
+    init: initSymptomsTracker,
+    loadSymptoms: function(list) {
+        const symptomsList = document.getElementById('symptomsList');
+        if (!symptomsList) return;
+
+        symptomsList.innerHTML = '';
+
+        if (!Array.isArray(list) || list.length === 0) {
+            showEmptySymptomsState();
+            updateSymptomsStats();
+            return;
+        }
+
+        list.forEach(symptom => addSymptomToDOM(symptom));
+        updateSymptomsStats();
+    }
+};

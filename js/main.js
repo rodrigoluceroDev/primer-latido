@@ -88,6 +88,11 @@ function initMainPage() {
     
     // Inicializar componentes UI
     initUIComponents();
+
+    // Inicializar módulos específicos si existen
+    if (typeof initDueDateCalculator === 'function') initDueDateCalculator();
+    if (window.symptomsManager && typeof window.symptomsManager.init === 'function') window.symptomsManager.init();
+    if (window.appointmentsManager && typeof window.appointmentsManager.init === 'function') window.appointmentsManager.init();
     
     // Cargar datos iniciales
     loadInitialData();
@@ -301,26 +306,32 @@ function initDynamicForms() {
  * Actualiza la UI con información del usuario
  */
 function updateUserUI() {
-    if (!AppState.currentUser) return;
-    
-    // Actualizar nombre de usuario en la navegación si existe el elemento
-    const userNameElements = document.querySelectorAll('.user-name');
-    userNameElements.forEach(element => {
-        element.textContent = AppState.currentUser.name.split(' ')[0]; // Solo primer nombre
-    });
-    
-    // Actualizar avatar si existe
-    const userAvatar = document.querySelector('.user-avatar');
-    if (userAvatar && !userAvatar.src) {
-        const initials = AppState.currentUser.name
-            .split(' ')
-            .map(n => n[0])
-            .join('')
-            .toUpperCase()
-            .slice(0, 2);
-        
-        // Crear avatar con iniciales
-        userAvatar.innerHTML = `<span>${initials}</span>`;
+    const userMenu = document.getElementById('userMenu');
+
+    // Si no hay elemento en el DOM lo dejamos
+    if (!userMenu) return;
+
+    if (!AppState.currentUser) {
+        // Mostrar link de iniciar sesión por defecto
+        userMenu.innerHTML = `<a href="./login.html" class="nav-link"><i class="fas fa-user"></i> Iniciar Sesión</a>`;
+        return;
+    }
+
+    // Mostrar el primer nombre y botón de logout
+    const firstName = (AppState.currentUser.name || AppState.currentUser.email || 'Usuario').split(' ')[0];
+    userMenu.innerHTML = `
+        <div class="nav-user">
+            <a href="#" class="nav-link user-link"><i class="fas fa-user-circle"></i> <span class="user-name">${firstName}</span></a>
+            <div class="user-actions">
+                <button id="logoutBtn" class="nav-link"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+            </div>
+        </div>
+    `;
+
+    // Agregar listener al logout creado dinámicamente
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', handleLogout);
     }
 }
 

@@ -22,6 +22,13 @@
     color: var(--text-color);
 }
 
+.logo h1 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
 .logo i {
     color: var(--primary-color);
     font-size: 2rem;
@@ -40,6 +47,11 @@
     border-radius: var(--border-radius-sm);
     font-weight: 500;
     transition: var(--transition);
+}
+
+/* Evitar que los enlaces del nav se dividan en varias líneas */
+.nav-link {
+    white-space: nowrap;
 }
 
 .nav-link:hover,

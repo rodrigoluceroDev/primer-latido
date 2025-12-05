@@ -250,3 +250,23 @@ function updateAppointmentsStats() {
         upcomingAppointments.textContent = `${upcoming} ${upcoming === 1 ? 'cita próxima' : 'citas próximas'}`;
     }
 }
+
+// Exponer manager para que la app principal pueda delegar carga inicial
+window.appointmentsManager = {
+    init: initAppointmentsTracker,
+    loadAppointments: function(list) {
+        const appointmentsList = document.getElementById('appointmentsList');
+        if (!appointmentsList) return;
+
+        appointmentsList.innerHTML = '';
+
+        if (!Array.isArray(list) || list.length === 0) {
+            showEmptyAppointmentsState();
+            updateAppointmentsStats();
+            return;
+        }
+
+        list.forEach(appointment => addAppointmentToDOM(appointment));
+        updateAppointmentsStats();
+    }
+};

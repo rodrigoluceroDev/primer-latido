@@ -20,6 +20,14 @@ function initDueDateCalculator() {
         calculateDueDate();
     });
     
+    // Si existía una fecha guardada, cargarla y calcular automáticamente
+    const savedLast = localStorage.getItem('primerLatidoLastPeriod');
+    if (savedLast && document.getElementById('lastPeriod')) {
+        document.getElementById('lastPeriod').value = savedLast;
+        // pequeño retraso para permitir que el DOM termine de inicializarse
+        setTimeout(calculateDueDate, 300);
+    }
+    
     // Reiniciar calculadora
     if (resetBtn) {
         resetBtn.addEventListener('click', function() {
@@ -90,6 +98,24 @@ function calculateDueDate() {
     updatePregnancyTracker(currentWeek);
     
     showNotification('Fecha probable calculada correctamente', 'success');
+
+    // Guardar datos de embarazo en localStorage y notificar al resto de la app
+    const pregnancyData = {
+        dueDate: dueDate.toISOString(),
+        currentWeek: currentWeek,
+        currentDay: currentDay,
+        daysLeft: daysLeft,
+        trimester: trimester
+    };
+
+    try {
+        localStorage.setItem('primerLatidoPregnancyData', JSON.stringify(pregnancyData));
+    } catch (e) {
+        console.error('No se pudo guardar primerLatidoPregnancyData:', e);
+    }
+
+    // Disparar evento personalizado para que main.js actualice AppState si corresponde
+    window.dispatchEvent(new CustomEvent('pregnancyDataUpdated', { detail: pregnancyData }));
 }
 
 function updateCalculatorResults(dueDate, week, day, daysLeft, trimester) {

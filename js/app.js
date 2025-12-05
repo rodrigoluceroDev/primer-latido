@@ -5,6 +5,9 @@
 
 // Inicialización específica de la página principal
 document.addEventListener('DOMContentLoaded', function() {
+    // Evitar inicialización duplicada si main.js ya inicializó la app
+    if (window.AppState && window.AppState.isInitialized) return;
+
     // Solo ejecutar si estamos en la página principal
     if (!document.querySelector('.calculator-section')) {
         return;
