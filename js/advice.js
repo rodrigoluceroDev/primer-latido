@@ -45,6 +45,19 @@ const ADVICE_DATA = {
                 description: "Bebe al menos 8 vasos de agua al día para mantenerte hidratada.",
                 importance: "media"
             }
+            ,
+            {
+                icon: "scale-balanced",
+                title: "Control de peso",
+                description: "Habla con tu profesional sobre el aumento de peso recomendado y lleva un registro semanal.",
+                importance: "media"
+            },
+            {
+                icon: "syringe",
+                title: "Vacunas recomendadas",
+                description: "Consulta sobre vacunas seguras durante el embarazo, como la antigripal y la tosferina.",
+                importance: "alta"
+            }
         ],
         milestones: [
             { week: 5, title: "Latido cardíaco", description: "El corazón del bebé comienza a latir" },
@@ -90,6 +103,19 @@ const ADVICE_DATA = {
                 icon: "book",
                 title: "Educación prenatal",
                 description: "Considera tomar clases de preparación para el parto.",
+                importance: "baja"
+            }
+            ,
+            {
+                icon: "flask",
+                title: "Chequeos de laboratorio",
+                description: "Realiza los análisis solicitados para controlar anemia, glucosa y otros parámetros.",
+                importance: "alta"
+            },
+            {
+                icon: "tshirt",
+                title: "Ropa cómoda",
+                description: "Usa ropa y calzado cómodos que acompañen el crecimiento de tu abdomen.",
                 importance: "baja"
             }
         ],
@@ -138,6 +164,19 @@ const ADVICE_DATA = {
                 title: "Señales de alarma",
                 description: "Conoce las señales que requieren atención médica inmediata.",
                 importance: "alta"
+            }
+            ,
+            {
+                icon: "lungs",
+                title: "Ejercicios de respiración",
+                description: "Practica técnicas de respiración para el trabajo de parto y el manejo del estrés.",
+                importance: "media"
+            },
+            {
+                icon: "baby-carriage",
+                title: "Preparación para lactancia",
+                description: "Infórmate sobre lactancia y coordina una consulta con asesora si lo deseas.",
+                importance: "media"
             }
         ],
         milestones: [

@@ -199,7 +199,39 @@ function showRegisterModal() {
     const modal = document.getElementById('registerModal');
     const modalBody = modal.querySelector('.modal-body');
     
-    modalBody.innerHTML = `...`; // mantengo el contenido dinámico (igual que antes)
+    modalBody.innerHTML = `
+        <form id="registerForm" class="register-form" style="display:block;">
+            <div class="form-group">
+                <label for="registerName">Nombre completo</label>
+                <input type="text" id="registerName" placeholder="Tu nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="registerEmail">Correo electrónico</label>
+                <input type="email" id="registerEmail" placeholder="tucorreo@ejemplo.com" required>
+            </div>
+            <div class="form-group">
+                <label for="registerPassword">Contraseña</label>
+                <input type="password" id="registerPassword" placeholder="••••••••" required>
+            </div>
+            <div class="form-group">
+                <label for="registerConfirmPassword">Confirmar contraseña</label>
+                <input type="password" id="registerConfirmPassword" placeholder="••••••••" required>
+            </div>
+            <div class="form-group">
+                <label for="dueDate">Fecha estimada de parto</label>
+                <input type="date" id="dueDate">
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" id="acceptTerms"> Acepto los <a href="#" target="_blank">Términos y Condiciones</a></label>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; margin-top:10px;">
+                <button type="submit" class="login-btn" style="flex:1;">
+                    <i class="fas fa-user-plus"></i> Crear cuenta
+                </button>
+                <button type="button" id="loginFromRegister" style="background:none;border:none;color:#FFB8D9;cursor:pointer;">Volver</button>
+            </div>
+        </form>
+    `; // formulario inyectado dinámicamente
     
     modal.style.display = 'flex';
     
@@ -227,6 +259,7 @@ function handleRegisterSubmit(e) {
     
     const name = document.getElementById('registerName').value.trim();
     const email = document.getElementById('registerEmail').value.trim();
+    const normalizedEmail = email.toLowerCase();
     const password = document.getElementById('registerPassword').value;
     const confirmPassword = document.getElementById('registerConfirmPassword').value;
     const dueDate = document.getElementById('dueDate').value;
@@ -279,7 +312,7 @@ function handleRegisterSubmit(e) {
         
         // Guardar usuario en localStorage (simulación)
         const users = JSON.parse(localStorage.getItem('primerLatidoUsers') || '[]');
-        const userExists = users.some(u => u.email === email);
+        const userExists = users.some(u => (u.email || '').trim().toLowerCase() === normalizedEmail);
         
         if (userExists) {
             showError('Este correo electrónico ya está registrado');
@@ -288,6 +321,8 @@ function handleRegisterSubmit(e) {
             return;
         }
         
+        // Asegurar que el email guardado esté normalizado
+        newUser.email = normalizedEmail;
         users.push(newUser);
         localStorage.setItem('primerLatidoUsers', JSON.stringify(users));
         
