@@ -240,3 +240,94 @@ ul {
     font-size: 0.85rem;
     color: var(--text-lighter);
 }
+
+/* --- Estilos del Carrusel --- */
+.carousel {
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease;
+    will-change: transform;
+}
+
+.carousel-slide {
+    min-width: 100%;
+    position: relative;
+    flex: 0 0 100%;
+}
+
+.carousel-slide img {
+    width: 100%;
+    height: 360px;
+    object-fit: cover;
+    display: block;
+    border-radius: var(--border-radius);
+}
+
+.carousel-caption {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    background: rgba(255,255,255,0.85);
+    padding: 14px 18px;
+    border-radius: 10px;
+    max-width: 70%;
+    box-shadow: var(--shadow-md);
+}
+
+.carousel-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.carousel-control.prev { left: 12px; }
+.carousel-control.next { right: 12px; }
+
+.carousel-control:hover { transform: translateY(-50%) scale(1.05); }
+
+.carousel-indicators {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 12px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.carousel-indicators .indicator {
+    width: 10px;
+    height: 10px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+}
+
+.carousel-indicators .indicator.active {
+    background: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(255,214,231,0.25);
+}
+
+@media (max-width: 768px) {
+    .carousel-slide img { height: 220px; }
+    .carousel-caption { left: 12px; right: 12px; max-width: calc(100% - 24px); }
+}
+
+/* Fin carrusel */

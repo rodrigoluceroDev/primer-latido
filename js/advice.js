@@ -218,6 +218,50 @@ const PREGNANCY_MILESTONES = [
     { week: 37, icon: "check-circle", title: "A Término", description: "Bebé completamente desarrollado", completed: false }
 ];
 
+// Hitos semanales detallados (1 por semana) con títulos y descripciones breves
+const WEEKLY_MILESTONES_FULL = [
+    { week: 1, icon: 'seedling', title: 'Inicio del conteo gestacional', description: 'Se considera el inicio del embarazo desde el primer día del último período menstrual; el cuerpo se prepara para la ovulación.', completed: false },
+    { week: 2, icon: 'dna', title: 'Ovulación y fecundación', description: 'Ocurre la ovulación y, si hay espermatozoides, puede producirse la fecundación del óvulo.', completed: false },
+    { week: 3, icon: 'syringe', title: 'Implantación', description: 'El embrión se implanta en la pared uterina y comienza a formarse la placenta incipiente.', completed: false },
+    { week: 4, icon: 'heartbeat', title: 'Desarrollo temprano del embrión', description: 'Se inicia la formación de estructuras básicas y el saco gestacional es visible en ecografía temprana.', completed: false },
+    { week: 5, icon: 'heartbeat', title: 'Primeros latidos', description: 'El corazón embrionario comienza a latir de forma detectable en ecografías transvaginales.', completed: false },
+    { week: 6, icon: 'baby', title: 'Formación de cabeza y extremidades', description: 'Se desarrollan los brotes de brazos y piernas y empiezan a formarse rasgos faciales.', completed: false },
+    { week: 7, icon: 'tooth', title: 'Desarrollo facial y estructuras', description: 'Se acentúa la formación de ojos, nariz y mandíbula; empiezan a diferenciarse tejidos básicos.', completed: false },
+    { week: 8, icon: 'hand-holding-medical', title: 'Organogénesis en progreso', description: 'Los órganos principales continúan formándose; es una etapa crítica para la morfogénesis.', completed: false },
+    { week: 9, icon: 'walking', title: 'Movimiento embrionario', description: 'El embrión puede realizar movimientos pequeños, aunque la madre aún no los percibe.', completed: false },
+    { week: 10, icon: 'microscope', title: 'Diferenciación de órganos', description: 'Los órganos siguen madurando y la estructura general del feto se consolida.', completed: false },
+    { week: 11, icon: 'diagnoses', title: 'Cierre de estructuras importantes', description: 'Se cierran y consolidan estructuras del sistema nervioso y circulatorio.', completed: false },
+    { week: 12, icon: 'shield-alt', title: 'Fin del periodo embrionario', description: 'Termina la fase embrionaria y comienza la fase fetal con menor riesgo relativo de malformaciones mayores.', completed: false },
+    { week: 13, icon: 'smile', title: 'Transición al segundo trimestre', description: 'El feto continúa creciendo y muchas madres notan reducción de náuseas.', completed: false },
+    { week: 14, icon: 'user-check', title: 'Crecimiento acelerado', description: 'Aumenta el crecimiento fetal y la placenta funciona de forma más eficiente.', completed: false },
+    { week: 15, icon: 'child', title: 'Formación de uñas y pelo fino', description: 'Comienzan a formarse uñas y un vello fino (lanugo) sobre la piel.', completed: false },
+    { week: 16, icon: 'venus-mars', title: 'Diferenciación sexual visible', description: 'En muchos casos el sexo del bebé puede observarse en la ecografía.', completed: false },
+    { week: 17, icon: 'ear', title: 'Desarrollo sensorial', description: 'Se inician estructuras del oído y comienza la percepción de sonidos externos.', completed: false },
+    { week: 18, icon: 'eyes', title: 'Movimientos más coordinados', description: 'Los movimientos fetales son más definidos; madre puede comenzar a sentirlos en algunas primeras gestantes.', completed: false },
+    { week: 19, icon: 'heartbeat', title: 'Ecografía morfológica', description: 'Se realiza la ecografía estructural para evaluar anatomía fetal alrededor de esta semana.', completed: false },
+    { week: 20, icon: 'flag-checkered', title: 'Mitad del embarazo', description: 'Se alcanza la mitad del embarazo; el bebé crece y madura órganos internos.', completed: false },
+    { week: 21, icon: 'book-medical', title: 'Desarrollo digestivo', description: 'El sistema digestivo se desarrolla y el bebé traga líquido amniótico.', completed: false },
+    { week: 22, icon: 'bone', title: 'Ossificación', description: 'Los huesos comienzan a osificarse y a endurecerse progresivamente.', completed: false },
+    { week: 23, icon: 'lungs', title: 'Desarrollo pulmonar inicial', description: 'Se forman los alvéolos primitivos y comienza la producción inicial de surfactante.', completed: false },
+    { week: 24, icon: 'hand-holding', title: 'Viabilidad creciente', description: 'A partir de esta semana la probabilidad de supervivencia fuera del útero aumenta con cuidados intensivos.', completed: false },
+    { week: 25, icon: 'brain', title: 'Desarrollo cerebral', description: 'El cerebro fetal experimenta crecimiento rápido y formación de circunvoluciones iniciales.', completed: false },
+    { week: 26, icon: 'lungs', title: 'Maduración pulmonar', description: 'Continúa la maduración de los pulmones; producción de surfactante aumenta.', completed: false },
+    { week: 27, icon: 'stethoscope', title: 'Fin del segundo trimestre', description: 'Se completa el segundo trimestre; aumentan tamaño y complejidad funcional del feto.', completed: false },
+    { week: 28, icon: 'running', title: 'Ingreso al tercer trimestre', description: 'Comienza el último tramo con ganancia importante de peso y maduración orgánica.', completed: false },
+    { week: 29, icon: 'weight', title: 'Acumulación de grasa', description: 'El bebé acumula grasa subcutánea que ayuda a la regulación térmica tras el nacimiento.', completed: false },
+    { week: 30, icon: 'heart', title: 'Fortalecimiento cardíaco', description: 'El sistema cardiovascular se consolida para soportar la vida extrauterina.', completed: false },
+    { week: 31, icon: 'baby', title: 'Mayor actividad fetal', description: 'Movimientos fuertes y patrones de sueño-vigilia más definidos.', completed: false },
+    { week: 32, icon: 'baby-carriage', title: 'Posición fetal', description: 'El bebé suele colocarse con la cabeza hacia abajo; la posición se estabiliza.', completed: false },
+    { week: 33, icon: 'thermometer', title: 'Ganancia de peso acelerada', description: 'Aumenta de manera notable el peso fetal en preparación al nacimiento.', completed: false },
+    { week: 34, icon: 'lungs', title: 'Madurez pulmonar avanzada', description: 'Los pulmones continúan madurando; las probabilidades de adaptación posnatal mejoran.', completed: false },
+    { week: 35, icon: 'check-circle', title: 'Preparación para el parto', description: 'Se completan muchos procesos de madurez; se afinan reflejos y tonificación muscular.', completed: false },
+    { week: 36, icon: 'hospital', title: 'A término temprano', description: 'A partir de esta semana muchos bebés están listos para nacer con mínima intervención.', completed: false },
+    { week: 37, icon: 'baby', title: 'A término', description: 'El bebé está considerado a término y listo para el nacimiento en cualquier momento.', completed: false },
+    { week: 38, icon: 'bell', title: 'Refinamiento final', description: 'Continúa el refinamiento funcional de pulmones, sistema nervioso y depósitos de grasa.', completed: false },
+    { week: 39, icon: 'home', title: 'Listo para el nacimiento', description: 'El bebé está completamente desarrollado y puede nacer de forma segura en cualquier momento.', completed: false },
+    { week: 40, icon: 'gift', title: 'Semana estimada de parto', description: 'Semana típica de término; el parto suele ocurrir entre las semanas 38 y 42.', completed: false }
+];
+
 class AdviceSystem {
     constructor() {
         this.currentWeek = 1;
@@ -554,8 +598,8 @@ class AdviceSystem {
         const milestonesContainer = document.querySelector('.milestones-list');
         if (!milestonesContainer) return;
         
-        // Filtrar hitos relevantes para la semana actual y próximos
-        const relevantMilestones = PREGNANCY_MILESTONES
+        // Usar la lista completa de hitos semanales para mostrar al menos un hito por semana
+        const relevantMilestones = WEEKLY_MILESTONES_FULL
             .filter(milestone => milestone.week <= this.currentWeek + 4)
             .sort((a, b) => a.week - b.week);
         

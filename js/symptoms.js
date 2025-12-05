@@ -43,6 +43,15 @@ function addSymptom() {
     const dateInput = document.getElementById('symptomDate');
     const notesInput = document.getElementById('symptomNotes');
     
+    // Requerir sesión activa para agregar síntomas
+    const currentUser = window.AppState?.currentUser || JSON.parse(localStorage.getItem('primerLatidoCurrentUser') || 'null');
+    if (!currentUser) {
+        showNotification('Debes iniciar sesión para agregar síntomas', 'error');
+        // Redirigir a login después de un breve delay
+        setTimeout(() => { window.location.href = 'login.html'; }, 900);
+        return;
+    }
+
     if (!nameInput.value.trim()) {
         showNotification('Por favor, ingresa un nombre para el síntoma', 'error');
         nameInput.focus();
@@ -104,6 +113,24 @@ function addSymptomToDOM(symptom) {
         3: 'Fuerte'
     };
     
+    // Mostrar acciones según si el usuario está autenticado
+    const currentUser = window.AppState?.currentUser || JSON.parse(localStorage.getItem('primerLatidoCurrentUser') || 'null');
+    let actionsHtml = '';
+    if (currentUser) {
+        actionsHtml = `
+            <button class="edit-btn" onclick="editSymptom(${symptom.id})">
+                <i class="fas fa-edit"></i> Editar
+            </button>
+            <button class="delete-btn" onclick="deleteSymptom(${symptom.id})">
+                <i class="fas fa-trash"></i> Eliminar
+            </button>`;
+    } else {
+        actionsHtml = `
+            <button class="login-redirect-btn" onclick="window.location.href='login.html'">
+                <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+            </button>`;
+    }
+
     symptomElement.innerHTML = `
         <div class="symptom-header">
             <span class="symptom-name">${symptom.name}</span>
@@ -114,9 +141,7 @@ function addSymptomToDOM(symptom) {
             ${symptom.notes ? `<p class="symptom-notes">${symptom.notes}</p>` : ''}
         </div>
         <div class="item-actions">
-            <button class="delete-btn" onclick="deleteSymptom(${symptom.id})">
-                <i class="fas fa-trash"></i> Eliminar
-            </button>
+            ${actionsHtml}
         </div>
     `;
     
@@ -140,6 +165,14 @@ function saveSymptom(symptom) {
 }
 
 function deleteSymptom(id) {
+    // Requerir sesión para eliminar
+    const currentUser = window.AppState?.currentUser || JSON.parse(localStorage.getItem('primerLatidoCurrentUser') || 'null');
+    if (!currentUser) {
+        showNotification('Debes iniciar sesión para eliminar síntomas', 'error');
+        setTimeout(() => { window.location.href = 'login.html'; }, 900);
+        return;
+    }
+
     let symptoms = JSON.parse(localStorage.getItem('primerLatidoSymptoms') || '[]');
     symptoms = symptoms.filter(symptom => symptom.id !== id);
     localStorage.setItem('primerLatidoSymptoms', JSON.stringify(symptoms));
@@ -166,6 +199,14 @@ function deleteSymptom(id) {
 }
 
 function clearAllSymptoms() {
+    // Requerir sesión para limpiar todos
+    const currentUser = window.AppState?.currentUser || JSON.parse(localStorage.getItem('primerLatidoCurrentUser') || 'null');
+    if (!currentUser) {
+        showNotification('Debes iniciar sesión para eliminar síntomas', 'error');
+        setTimeout(() => { window.location.href = 'login.html'; }, 900);
+        return;
+    }
+
     if (confirm('¿Estás segura de que quieres eliminar todos los síntomas? Esta acción no se puede deshacer.')) {
         localStorage.removeItem('primerLatidoSymptoms');
         const symptomsList = document.getElementById('symptomsList');
@@ -177,6 +218,77 @@ function clearAllSymptoms() {
         showNotification('Todos los síntomas han sido eliminados', 'info');
     }
 }
+
+// Editar síntoma: cargar datos en el formulario para edición
+window._editingSymptomId = null;
+function editSymptom(id) {
+    const symptoms = JSON.parse(localStorage.getItem('primerLatidoSymptoms') || '[]');
+    const s = symptoms.find(x => x.id === id);
+    if (!s) return;
+
+    document.getElementById('symptomName').value = s.name;
+    document.getElementById('symptomIntensity').value = s.intensity;
+    document.getElementById('symptomDate').value = s.date;
+    document.getElementById('symptomNotes').value = s.notes || '';
+
+    // Marcar la opción visualmente
+    document.querySelectorAll('.intensity-option').forEach(opt => opt.classList.toggle('active', opt.dataset.value == s.intensity));
+
+    window._editingSymptomId = id;
+    const submitBtn = document.querySelector('#symptomForm button[type="submit"]');
+    if (submitBtn) submitBtn.textContent = 'Guardar cambios';
+}
+
+// Reemplazar addSymptom para soportar edición
+const originalAddSymptom = addSymptom;
+addSymptom = function() {
+    if (window._editingSymptomId) {
+        const id = window._editingSymptomId;
+        const nameInput = document.getElementById('symptomName');
+        const intensityInput = document.getElementById('symptomIntensity');
+        const dateInput = document.getElementById('symptomDate');
+        const notesInput = document.getElementById('symptomNotes');
+
+        if (!nameInput.value.trim()) {
+            showNotification('Por favor, ingresa un nombre para el síntoma', 'error');
+            nameInput.focus();
+            return;
+        }
+
+        let symptoms = JSON.parse(localStorage.getItem('primerLatidoSymptoms') || '[]');
+        symptoms = symptoms.map(sym => {
+            if (sym.id === id) {
+                return {
+                    ...sym,
+                    name: nameInput.value.trim(),
+                    intensity: parseInt(intensityInput.value),
+                    date: dateInput.value,
+                    notes: notesInput.value.trim(),
+                    updatedAt: new Date().toISOString()
+                };
+            }
+            return sym;
+        });
+
+        localStorage.setItem('primerLatidoSymptoms', JSON.stringify(symptoms));
+        if (window.symptomsManager && typeof window.symptomsManager.loadSymptoms === 'function') {
+            window.symptomsManager.loadSymptoms(symptoms);
+        }
+
+        showNotification('Síntoma actualizado', 'success');
+        window._editingSymptomId = null;
+        const submitBtn = document.querySelector('#symptomForm button[type="submit"]');
+        if (submitBtn) submitBtn.textContent = 'Agregar Síntoma';
+
+        // Resetear form
+        nameInput.value = '';
+        notesInput.value = '';
+        nameInput.focus();
+        return;
+    }
+
+    return originalAddSymptom.apply(this, arguments);
+};
 
 function showEmptySymptomsState() {
     const symptomsList = document.getElementById('symptomsList');

@@ -24,7 +24,15 @@ const AppState = {
 document.addEventListener('DOMContentLoaded', function() {
     // Inicializar estado
     initAppState();
-    
+
+    // Si no hay usuario autenticado, permitimos continuar en modo invitado
+    // (no redirigimos automáticamente a `login.html`). La app mostrará
+    // un banner informando y bloqueará acciones protegidas.
+    if (!AppState.currentUser) {
+        console.log('Sin sesión activa: iniciando en modo invitado');
+        // Continuar la inicialización de la página principal como invitado
+    }
+
     // Inicializar componentes según la página
     if (window.location.pathname.includes('login.html')) {
         // La inicialización del login se maneja en login.js
@@ -33,13 +41,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Página principal
         initMainPage();
     }
-    
+
     // Inicializar listeners globales
     initGlobalListeners();
-    
+
     // Marcar como inicializada
     AppState.isInitialized = true;
-    
+
     console.log('Primer Latido inicializado correctamente');
 });
 

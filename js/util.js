@@ -795,4 +795,13 @@ style.textContent = `
 
 document.head.appendChild(style);
 
+// Añadir helper global para notificaciones usado por el resto de módulos
+window.showNotification = function(message, type = 'info', duration = 3000) {
+    if (window.Utils && Utils.DOM && typeof Utils.DOM.showToast === 'function') {
+        Utils.DOM.showToast(message, type, duration);
+    } else if (typeof alert === 'function') {
+        alert(message);
+    }
+};
+
 console.log('Utilidades cargadas correctamente');

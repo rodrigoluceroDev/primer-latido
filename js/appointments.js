@@ -34,6 +34,14 @@ function addAppointment() {
     const locationInput = document.getElementById('appointmentLocation');
     const notesInput = document.getElementById('appointmentNotes');
     
+    // Requerir sesión activa para agregar o editar citas
+    const currentUser = window.AppState?.currentUser || JSON.parse(localStorage.getItem('primerLatidoCurrentUser') || 'null');
+    if (!currentUser) {
+        showNotification('Debes iniciar sesión para agregar o editar citas', 'error');
+        setTimeout(() => { window.location.href = 'login.html'; }, 900);
+        return;
+    }
+
     if (!typeInput.value) {
         showNotification('Por favor, selecciona el tipo de cita', 'error');
         typeInput.focus();
@@ -119,6 +127,24 @@ function addAppointmentToDOM(appointment) {
         'otro': 'Otro'
     };
     
+    // Mostrar acciones de la cita según si el usuario está autenticado
+    const currentUser = window.AppState?.currentUser || JSON.parse(localStorage.getItem('primerLatidoCurrentUser') || 'null');
+    let actionsHtml = '';
+    if (currentUser) {
+        actionsHtml = `
+            <button class="edit-btn" onclick="editAppointment(${appointment.id})">
+                <i class="fas fa-edit"></i> Editar
+            </button>
+            <button class="delete-btn" onclick="deleteAppointment(${appointment.id})">
+                <i class="fas fa-trash"></i> Eliminar
+            </button>`;
+    } else {
+        actionsHtml = `
+            <button class="login-redirect-btn" onclick="window.location.href='login.html'">
+                <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+            </button>`;
+    }
+
     appointmentElement.innerHTML = `
         <div class="appointment-header">
             <span class="appointment-type">${typeNames[appointment.type] || appointment.type}</span>
@@ -130,9 +156,7 @@ function addAppointmentToDOM(appointment) {
             ${appointment.notes ? `<p class="appointment-notes"><strong>Notas:</strong> ${appointment.notes}</p>` : ''}
         </div>
         <div class="item-actions">
-            <button class="delete-btn" onclick="deleteAppointment(${appointment.id})">
-                <i class="fas fa-trash"></i> Eliminar
-            </button>
+            ${actionsHtml}
         </div>
     `;
     
@@ -156,6 +180,14 @@ function saveAppointment(appointment) {
 }
 
 function deleteAppointment(id) {
+    // Requerir sesión para eliminar
+    const currentUser = window.AppState?.currentUser || JSON.parse(localStorage.getItem('primerLatidoCurrentUser') || 'null');
+    if (!currentUser) {
+        showNotification('Debes iniciar sesión para eliminar citas', 'error');
+        setTimeout(() => { window.location.href = 'login.html'; }, 900);
+        return;
+    }
+
     let appointments = JSON.parse(localStorage.getItem('primerLatidoAppointments') || '[]');
     appointments = appointments.filter(appointment => appointment.id !== id);
     localStorage.setItem('primerLatidoAppointments', JSON.stringify(appointments));
@@ -182,6 +214,14 @@ function deleteAppointment(id) {
 }
 
 function clearAllAppointments() {
+    // Requerir sesión para limpiar todas
+    const currentUser = window.AppState?.currentUser || JSON.parse(localStorage.getItem('primerLatidoCurrentUser') || 'null');
+    if (!currentUser) {
+        showNotification('Debes iniciar sesión para eliminar citas', 'error');
+        setTimeout(() => { window.location.href = 'login.html'; }, 900);
+        return;
+    }
+
     if (confirm('¿Estás segura de que quieres eliminar todas las citas? Esta acción no se puede deshacer.')) {
         localStorage.removeItem('primerLatidoAppointments');
         const appointmentsList = document.getElementById('appointmentsList');
@@ -193,6 +233,74 @@ function clearAllAppointments() {
         showNotification('Todas las citas han sido eliminadas', 'info');
     }
 }
+
+// Editar cita: cargar datos en el formulario para edición
+window._editingAppointmentId = null;
+function editAppointment(id) {
+    const appointments = JSON.parse(localStorage.getItem('primerLatidoAppointments') || '[]');
+    const apt = appointments.find(a => a.id === id);
+    if (!apt) return;
+
+    // Rellenar formulario
+    document.getElementById('appointmentType').value = apt.type;
+    document.getElementById('appointmentDate').value = apt.date;
+    document.getElementById('appointmentDoctor').value = apt.doctor;
+    document.getElementById('appointmentLocation').value = apt.location;
+    document.getElementById('appointmentNotes').value = apt.notes || '';
+
+    window._editingAppointmentId = id;
+    const submitBtn = document.querySelector('#appointmentForm button[type="submit"]');
+    if (submitBtn) submitBtn.textContent = 'Guardar cambios';
+}
+
+// Al enviar el formulario, si hay una edición en curso, actualizar en lugar de crear
+const originalAddAppointment = addAppointment;
+addAppointment = function() {
+    if (window._editingAppointmentId) {
+        // Actualizar existente
+        const id = window._editingAppointmentId;
+        const typeInput = document.getElementById('appointmentType');
+        const dateInput = document.getElementById('appointmentDate');
+        const doctorInput = document.getElementById('appointmentDoctor');
+        const locationInput = document.getElementById('appointmentLocation');
+        const notesInput = document.getElementById('appointmentNotes');
+
+        let appointments = JSON.parse(localStorage.getItem('primerLatidoAppointments') || '[]');
+        appointments = appointments.map(a => {
+            if (a.id === id) {
+                return {
+                    ...a,
+                    type: typeInput.value,
+                    date: dateInput.value,
+                    doctor: doctorInput.value.trim(),
+                    location: locationInput.value.trim(),
+                    notes: notesInput.value.trim(),
+                    updatedAt: new Date().toISOString()
+                };
+            }
+            return a;
+        });
+
+        localStorage.setItem('primerLatidoAppointments', JSON.stringify(appointments));
+        // Recargar lista
+        if (window.appointmentsManager && typeof window.appointmentsManager.loadAppointments === 'function') {
+            window.appointmentsManager.loadAppointments(appointments);
+        }
+
+        showNotification('Cita actualizada correctamente', 'success');
+        window._editingAppointmentId = null;
+        const submitBtn = document.querySelector('#appointmentForm button[type="submit"]');
+        if (submitBtn) submitBtn.textContent = 'Agregar Cita';
+
+        // Reset form
+        document.getElementById('appointmentForm').reset();
+        document.getElementById('appointmentDate').min = new Date().toISOString().slice(0, 16);
+        return;
+    }
+
+    // Si no estamos en edición, usar comportamiento original
+    return originalAddAppointment.apply(this, arguments);
+};
 
 function showEmptyAppointmentsState() {
     const appointmentsList = document.getElementById('appointmentsList');

@@ -65,6 +65,46 @@
         </div>
     </section>
 
+    <!-- Carrusel principal -->
+    <section id="carousel" class="section carousel-section">
+        <div class="container">
+            <div class="carousel card" aria-roledescription="carousel">
+                <div class="carousel-track" data-current="0">
+                    <div class="carousel-slide">
+                        <img src="assets/images/slide1.jpg" alt="Madre embarazada sonriendo" loading="lazy">
+                        <div class="carousel-caption">
+                            <h3>Bienvenida a tu viaje</h3>
+                            <p>Herramientas para acompañar cada etapa del embarazo.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="assets/images/slide2.jpg" alt="Consulta médica prenatal" loading="lazy">
+                        <div class="carousel-caption">
+                            <h3>Registra tus citas</h3>
+                            <p>No pierdas de vista tus controles prenatales importantes.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="assets/images/slide3.jpg" alt="Consejos de salud para embarazadas" loading="lazy">
+                        <div class="carousel-caption">
+                            <h3>Consejos personalizados</h3>
+                            <p>Información práctica por trimestre y seguimiento semanal.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="carousel-control prev" aria-label="Anterior">&lsaquo;</button>
+                <button class="carousel-control next" aria-label="Siguiente">&rsaquo;</button>
+
+                <div class="carousel-indicators" role="tablist">
+                    <button class="indicator" data-slide="0" aria-label="Ir a la diapositiva 1"></button>
+                    <button class="indicator" data-slide="1" aria-label="Ir a la diapositiva 2"></button>
+                    <button class="indicator" data-slide="2" aria-label="Ir a la diapositiva 3"></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Sección Calculadora Mejorada -->
     <section id="calculator" class="section calculator-section">
         <div class="container">
@@ -341,12 +381,14 @@
                     
                     <div class="advice-tab-content" id="tab2">
                         <h3><i class="fas fa-leaf"></i> Segundo Trimestre (Semanas 14-27)</h3>
-                        <!-- Contenido similar para segundo trimestre -->
+                        <div class="advice-grid"></div>
+                        <div class="trimester-milestones"></div>
                     </div>
                     
                     <div class="advice-tab-content" id="tab3">
                         <h3><i class="fas fa-baby"></i> Tercer Trimestre (Semanas 28-40)</h3>
-                        <!-- Contenido similar para tercer trimestre -->
+                        <div class="advice-grid"></div>
+                        <div class="trimester-milestones"></div>
                     </div>
                 </div>
             </div>
@@ -473,6 +515,7 @@
     <!-- Cargar utilidades y el archivo principal global (main) primero -->
     <script src="./js/util.js"></script>
     <script src="./js/main.js"></script>
+    <script src="./js/carousel.js"></script>
     <script src="./js/calculator.js"></script>
     <script src="./js/symptoms.js"></script>
     <script src="./js/appointments.js"></script>
